@@ -15,6 +15,8 @@ public class Asteroid : MonoBehaviour
     private SpriteRenderer sR;
     private Rigidbody2D rgBody;
 
+    public GameObject distanceSplit;
+
     private void Awake()
     {
         sR = GetComponent<SpriteRenderer>();
@@ -40,6 +42,39 @@ public class Asteroid : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            if (size <= 1.5f)
+            {
+
+            }
+            else if(size <= 2f && size > 1.5f)
+            {
+                Split();
+                Split();
+            }
+            else if(size <= 3.5f && size > 2f)
+            {
+                Split();
+                Split();
+                Split();
+            }
+
+            //explosion sound
+
+            GameManager.instance.score++;
+            Instantiate(distanceSplit, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void Split()
+    {
+        Vector2 position = transform.position;
+        position += Random.insideUnitCircle * 0.5f;
+
+        Asteroid half = Instantiate(this, position, transform.rotation);
+        half.size = size * 0.5f;
+        half.SetTrajectory(Random.insideUnitCircle.normalized * moveSpeed);
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7970266026567745753}
   m_Layer: 8
   m_Name: Asteroid
-  m_TagString: Untagged
+  m_TagString: Asteroid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,3 +145,5 @@ MonoBehaviour:
   minSize: 0.5
   maxSize: 3.5
   lifeTime: 30
+  distanceSplit: {fileID: 7227453374285926201, guid: f36f4edae07346d48bd0036e1f3d72bf, type: 3}
+  explosion: {fileID: 4802165524630472129, guid: 76a7270dacab8f142be9ac17e5367e93, type: 3}
