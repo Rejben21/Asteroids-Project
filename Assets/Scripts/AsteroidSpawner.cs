@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AsteroidSpawner : MonoBehaviour
 {
+    public static AsteroidSpawner instance;
+
     public Asteroid asteroidPrefab;
 
     public float trajection = 15;
@@ -12,12 +14,27 @@ public class AsteroidSpawner : MonoBehaviour
 
     public int spawnAmount = 1;
 
-    private void Start()
+    public float timer = 3;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    private void Update()
+    {
+        if(GameManager.instance.hasStarted)
+        {
+            timer -= Time.deltaTime * .03f;
+        }
+    }
+
+    public void StartSpawning()
     {
         InvokeRepeating(nameof(Spawn), spawnRate, spawnRate);
     }
 
-    private void Spawn()
+    public void Spawn()
     {
         for (int i = 0; i < spawnAmount; i++)
         {

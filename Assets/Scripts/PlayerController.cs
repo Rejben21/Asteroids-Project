@@ -30,81 +30,88 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        moving = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
-        
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if(GameManager.instance.hasStarted)
         {
-            isMoving = true;
-            laser.SetActive(false);
-        }
-        else
-        {
-            isMoving = false;
-            laser.SetActive(true);
-        }
+            moving = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && shieldDuration >= shieldTime)
-        {
-            isShield = true;
-            shield.SetActive(true);
-        }
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                isMoving = true;
+                laser.SetActive(false);
+            }
+            else
+            {
+                isMoving = false;
+                laser.SetActive(true);
+            }
 
-        if(shieldDuration <= 0)
-        {
-            isShield = false;
-            shield.SetActive(false);
-        }
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && shieldDuration >= shieldTime)
+            {
+                isShield = true;
+                shield.SetActive(true);
+                AudioManager.instance.PlaySFX(2);
+            }
 
-        if(!isShield && shieldDuration < shieldTime)
-        {
-            shieldDuration += Time.deltaTime;
-        }
-        else
-        {
-            shieldDuration -= Time.deltaTime;
-        }
+            if (shieldDuration <= 0)
+            {
+                isShield = false;
+                shield.SetActive(false);
+                AudioManager.instance.PlaySFX(1);
+            }
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            turning = 1.0f;
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            turning = -1.0f;
-        }
-        else
-        {
-            turning = 0.0f;
-        }
+            if (!isShield && shieldDuration < shieldTime)
+            {
+                shieldDuration += Time.deltaTime;
+            }
+            else
+            {
+                shieldDuration -= Time.deltaTime;
+            }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Shoot();
-        }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                turning = 1.0f;
+            }
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                turning = -1.0f;
+            }
+            else
+            {
+                turning = 0.0f;
+            }
 
-        shield.transform.position = transform.position;
-        anim.SetBool("isMoving", isMoving);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Shoot();
+            }
+
+            GameManager.instance.shieldbar.value = shieldDuration;
+            shield.transform.position = transform.position;
+            shield.transform.rotation = transform.rotation;
+            anim.SetBool("isMoving", isMoving);
+        }
     }
 
     private void FixedUpdate()
     {
-        if (moving)
+        if(GameManager.instance.hasStarted)
         {
-            rgBody.AddForce(transform.up * moveSpeed);
-            //fire animation
-            //particles
-            //fire sound
-        }
+            if (moving)
+            {
+                rgBody.AddForce(transform.up * moveSpeed);
+            }
 
-        if (turning != 0)
-        {
-            rgBody.AddTorque(turning * turnSpeed);
+            if (turning != 0)
+            {
+                rgBody.AddTorque(turning * turnSpeed);
+            }
         }
     }
 
     public void Shoot()
     {
-        //shoot sound
+        AudioManager.instance.PlaySFX(3);
         Bullet bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
         bullet.Project(transform.up);
     }
@@ -113,7 +120,6 @@ public class PlayerController : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Asteroid"))
         {
-            //sound
 
             rgBody.velocity = Vector2.zero;
             rgBody.angularVelocity = 0.0f;
@@ -121,6 +127,7 @@ public class PlayerController : MonoBehaviour
             gameObject.SetActive(false);
 
             GameManager.instance.PlayerDied();
+            AudioManager.instance.PlaySFX(5);
         }
     }
 }

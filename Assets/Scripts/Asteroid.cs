@@ -60,11 +60,14 @@ public class Asteroid : MonoBehaviour
                 Split();
             }
 
-            //explosion sound
-
             GameManager.instance.score++;
+            AudioManager.instance.PlaySFX(6);
             Instantiate(distanceSplit, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
+        }
+        else if(collision.gameObject.CompareTag("Shield"))
+        {
+            AudioManager.instance.PlaySFX(0);
         }
     }
 
